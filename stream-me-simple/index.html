@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stream Me Simple</title>
+    <style>
+      #webcamImage {
+        max-width: 100%;
+        max-height: 100vh;
+      }
+      #fpsDisplay {
+        position: fixed;
+        top: 10px;
+        right: 10px;
+        background-color: rgba(255, 255, 255, 0.7);
+        padding: 5px;
+        border-radius: 5px;
+      }
+    </style>
+  </head>
+  <body>
+    <img id="webcamImage" src="/output.jpg" alt="Webcam Stream">
+    <div id="fpsDisplay">FPS: <span id="fpsValue">0</span></div>
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <script>
+      const socket = io();
+      const fpsDisplay = document.getElementById("fpsValue");
+      let fpsCounter = 0;
+
+      socket.on("webcamData", (data) => {
+        const startTime = performance.now();
+        
+        myImage = document.getElementById("webcamImage");
+        myImage.src = "/output.jpg?rand=" + Math.random();
+
+        const endTime = performance.now();
+        const elapsedMillis = endTime - startTime;
+        const fps = 1000 / elapsedMillis;
+
+        fpsCounter++;
+        if (fpsCounter === 10) { // Update FPS display every 10 frames
+          fpsDisplay.textContent = fps.toFixed(2);
+          fpsCounter = 0;
+        }
+      });
+    </script>
+  </body>
+</html>
